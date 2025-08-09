@@ -1,0 +1,18 @@
+FROM ubuntu:24.04
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libssl-dev \
+    wget
+
+COPY mta-utils-dev-x86_64.deb .
+
+RUN dpkg -i mta-utils-dev-x86_64.deb
+
+COPY my_decrypter.c .
+
+RUN gcc -o my_decrypter my_decrypter.c -lmta_crypt -lmta_rand
+
+RUN mkdir -p /mnt/mta /var/log && chmod 777 /mnt/mta /var/log
+
+CMD ["./my_decrypter"]
